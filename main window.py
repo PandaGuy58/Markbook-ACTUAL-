@@ -6,6 +6,7 @@ import sys
 
 from SQLConnection import *
 from DisplayTableWidget import *
+from inputWidgets import *
 
 class MainWindow(QMainWindow):
     """Main Window Layout"""
@@ -29,12 +30,16 @@ class MainWindow(QMainWindow):
         self.table_Students = QAction("Students",self)
         self.table_Teachers = QAction("Teachers",self)
         self.table_UnitAssignments = QAction("Unit Assignments",self)
-        self.table_Units = QAction("Units",self)        
+        self.table_Units = QAction("Units",self)
+
+        #add
+        self.add_assignments = QAction("Assignments",self)
 
         #add menu the application
         self.menu = QMenuBar()
         self.file_menu = self.menu.addMenu("File")
         self.table_menu = self.menu.addMenu("Tables")
+        self.add_menu = self.menu.addMenu("Add")
 
         #add actions to menu
         self.file_menu.addAction(self.new_database)
@@ -50,6 +55,8 @@ class MainWindow(QMainWindow):
         self.table_menu.addAction(self.table_Teachers)
         self.table_menu.addAction(self.table_UnitAssignments)
         self.table_menu.addAction(self.table_Units)
+
+        self.add_menu.addAction(self.add_assignments)
 
         #initalize menu bar
         self.setMenuBar(self.menu)
@@ -70,6 +77,9 @@ class MainWindow(QMainWindow):
         self.table_Teachers.triggered.connect(self.display_Teachers)
         self.table_UnitAssignments.triggered.connect(self.display_UnitAssignments)
         self.table_Units.triggered.connect(self.display_Units)
+
+        #add
+        self.add_assignments.triggered.connect(self.add_assignment_record)
         
     def open_connection(self):
         path = QFileDialog.getOpenFileName()
@@ -87,11 +97,20 @@ class MainWindow(QMainWindow):
     def dbConnected(self):
         self.table_menu.setEnabled(True)
         self.close_database.setEnabled(True)
+        self.add_menu.setEnabled(True)
 
     def dbNotConnected(self):
         self.table_menu.setEnabled(False)
         self.close_database.setEnabled(False)
+        self.add_menu.setEnabled(False)
 
+    #add methods:
+
+    def add_assignment_record(self):
+        if not hasattr(self,'AssignmentInputWidget'):
+            self.assignment_input_widget = AssignmentInputWidget()
+        self.setCentralWidget(self.assignment_input_widget)
+                                               
 
     #view table methods:
 

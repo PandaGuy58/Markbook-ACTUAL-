@@ -46,7 +46,6 @@ def create_Assignments_table(db_name):
     sql = """create table Assignments
           (AssignmentID integer,
           AssignmentName string,
-          AssignmentMark integer,
           AssignmentMaxMark integer,
           primary key(AssignmentID))"""
     create_table(db_name,sql)
@@ -76,6 +75,16 @@ def create_Students_table(db_name):
           StudentSurname string,
           primary key(StudentID))"""
     create_table(db_name,sql)
+
+def create_StudentAssignmentResults(db_name):
+    sql = """create table StudentAssignmentResults
+          (StudentAssignmentID integer,
+          StudentID integer,
+          AssignmentID integer,
+          AssignmentMark integer,
+          primary key(StudentAssignmentID)
+          foreign key(StudentID) refereces Students(StudentID)
+          foreign key(AssignmentID) references Assignments(AssignmentID))"""
 
 def create_database(db_name):
     create_Classes_table(db_name)

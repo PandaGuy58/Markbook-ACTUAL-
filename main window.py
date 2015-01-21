@@ -80,6 +80,10 @@ class MainWindow(QMainWindow):
 
         #add
         self.add_assignments.triggered.connect(self.add_assignment_record)
+
+        #status bar
+        StatusBar = QStatusBar()
+
         
     def open_connection(self):
         path = QFileDialog.getOpenFileName()

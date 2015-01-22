@@ -1,4 +1,5 @@
 from PyQt4.QtSql import *
+import sqlite3
 
 class SQLConnection:
     """An SQL Connection class"""
@@ -68,3 +69,12 @@ class SQLConnection:
         query.prepare("""SELECT * FROM Classes""")
         query.exec_()
         return query
+
+    def insert_Assignment(self,values):
+        query = QSqlQuery()
+        query.prepare("""insert into Assignments(AssignmentName,AssignmentMaxMark) values (?,?)""")
+        query.addBindValue(values[0])
+        query.addBindValue(values[1])
+        query.exec_()
+       
+            

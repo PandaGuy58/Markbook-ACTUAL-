@@ -4,21 +4,28 @@ from PyQt4.QtSql import *
 import sqlite3
 import sys
 
+from SQLConnection import *
+from main_window import *
+
 class AssignmentInputWidget(QWidget):
     """Input tool to insert Assignment Records to db"""
-    def __init__(self):
+    def __init__(self,parent):
         super().__init__()
+        self.parent = parent
         self.stacked_layout = QStackedLayout()
         self.setLayout(self.stacked_layout)
         self.create_assignment_layout()
         self.assignmentID_line_edit.setEnabled(False)
         self.assignmentMaxMark_line_edit.setEnabled(False)
+        self.connection = parent.connection
 
         #triggers
         self.add_assignment_button.clicked.connect(self.insert_assignment_toDB)
         self.assignmentName_line_edit.returnPressed.connect(self.assignmentName_line_editSignal)
         self.assignmentMaxMark_line_edit.returnPressed.connect(self.assignmentMaxMark_line_editSignal)
-        
+
+        #status bar       
+        self.parent.statusBar.showMessage("Hello Input Widget")
         
     def create_assignment_layout(self):
         #widgets
@@ -26,7 +33,7 @@ class AssignmentInputWidget(QWidget):
         self.assignmentName_label = QLabel("AssignmentName:")
         self.assignmentMaxMark_label = QLabel("AssignmentMaxMark:")
 
-        self.assignmentID_line_edit = QLineEdit()
+        self.assignmentID_line_edit = QLineEdit("Auto generated")
         self.assignmentName_line_edit = QLineEdit()
         self.assignmentMaxMark_line_edit = QLineEdit()
 
@@ -50,7 +57,8 @@ class AssignmentInputWidget(QWidget):
         self.stacked_layout.addWidget(self.display_widget)
 
     def insert_assignment_toDB(self):
-        pass
+        self.values = (self.assignmentName_line_edit.text(),self.assignmentMaxMark_line_edit.text())       
+        self.connection.insert_Assignment(self.values)
 
     def assignmentName_line_editSignal(self):
         if len(str(self.assignmentID_line_edit)) > 0:
@@ -58,9 +66,9 @@ class AssignmentInputWidget(QWidget):
 
     def assignmentMaxMark_line_editSignal(self):
         try:
-            int(self.assignmentMaxMark_label)
+            int(self.assignmentMaxMark_label.text())
         except:
-            pass
+            self.parent.statusBar.showMessage("You must enter an integer!")
             
             
         

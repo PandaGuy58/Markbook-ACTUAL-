@@ -36,6 +36,7 @@ class MainWindow(QMainWindow):
         self.table_Teachers = QAction("Teachers",self)
         self.table_UnitAssignments = QAction("Unit Assignments",self)
         self.table_Units = QAction("Units",self)
+        self.table_StudentAssignmentResult = QAction("Student Assignment Results",self)
 
         #add
         self.add_assignments = QAction("Assignments",self)
@@ -60,6 +61,7 @@ class MainWindow(QMainWindow):
         self.table_menu.addAction(self.table_Teachers)
         self.table_menu.addAction(self.table_UnitAssignments)
         self.table_menu.addAction(self.table_Units)
+        self.table_menu.addAction(self.table_StudentAssignmentResult)
 
         self.add_menu.addAction(self.add_assignments)
 
@@ -68,6 +70,7 @@ class MainWindow(QMainWindow):
 
         #initialize application
         self.dbNotConnected()
+        self.setCentralWidget(self.startWidget)
 
         #triggers
         self.open_a_database.triggered.connect(self.open_connection)
@@ -82,6 +85,7 @@ class MainWindow(QMainWindow):
         self.table_Teachers.triggered.connect(self.display_Teachers)
         self.table_UnitAssignments.triggered.connect(self.display_UnitAssignments)
         self.table_Units.triggered.connect(self.display_Units)
+        self.table_StudentAssignmentResult.triggered.connect(self.display_StudentAssignmentResults)
 
         #add
         self.add_assignments.triggered.connect(self.add_assignment_record)
@@ -116,15 +120,13 @@ class MainWindow(QMainWindow):
             self.assignment_input_widget = AssignmentInputWidget(self)
         self.setCentralWidget(self.assignment_input_widget)      
         
-                                               
-
     #view table methods:
 
     def display_ClassUnits(self):
         if not hasattr(self,'DisplayTableWidget'):
             self.display_widget = DisplayTableWidget()
         self.setCentralWidget(self.display_widget)
-        query = self.connection.find_ClasUnits()
+        query = self.connection.find_ClassUnits()
         self.display_widget.show_results(query)
 
     def display_Units(self):
@@ -176,6 +178,14 @@ class MainWindow(QMainWindow):
         query = self.connection.find_Classes()
         self.display_widget.show_results(query)
 
+    def display_StudentAssignmentResults(self):
+        if not hasattr(self,'DisplayTableWidget'):
+            self.display_widget = DisplayTableWidget()
+        self.setCentralWidget(self.display_widget)
+        query = self.connection.find_StudentAssignmentResult()
+        self.display_widget.show_results(query)
+        
+
 #-----------------------------------------------------------------
         
 class InputDBNameWidget(QWidget):
@@ -188,7 +198,28 @@ class InputDBNameWidget(QWidget):
         
         self.addCancelButton = QPushButton("Cancel")
 
-        #self.addMessageBox = 
+class startWidget(QWidget):
+    """Startup Widget for MainWindow"""
+    def __init__(self):
+        super().__init__()
+        self.stacked_layout = QStackedLayout()
+        self.setLayout(self.stacked_layout)
+        self.create_startLayout()
+
+    def create_startLayout():
+        self.open_database = QPushButton("Open an Existing Database")
+        self.create_database = QPushButton("Create a New Database")
+        self.main_label = QLabel("Choose one of the following options")
+
+        #add widgets to the layout
+        self.horizontal_layout = QHBoxLayout()
+        self.horizontal_layout.addWidget(self.main_label)
+        self.horizontal_layout.addWidget(self.create_database)
+        self.horizontal_layout.addWidget(self.open_database)
+
+        self.display_widget = QWidget()
+        self.display_widget.setLayout(self.horizontal_layout)
+        self.stacked_layout.addWidget(self.display_widget)
     
 
 if __name__ == "__main__":

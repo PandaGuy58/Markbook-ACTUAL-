@@ -22,7 +22,7 @@ class SQLConnection:
     def close_database(self):
         self.db = None
 
-    def find_ClasUnits(self):
+    def find_ClassUnits(self):
         query = QSqlQuery()
         query.prepare("""SELECT * FROM ClassUnits""")
         query.exec_()
@@ -70,11 +70,73 @@ class SQLConnection:
         query.exec_()
         return query
 
+    def find_StudentAssignmentResult(self):
+        query = QSqlQuery()
+        query.prepare("""Select * FROM StudentAssignmentResults""")
+        query.exec_()
+        return query
+
+
     def insert_Assignment(self,values):
         query = QSqlQuery()
-        query.prepare("""insert into Assignments(AssignmentName,AssignmentMaxMark) values (?,?)""")
+        query.prepare("""INSERT into Assignments(AssignmentName,AssignmentMaxMark) values (?,?)""")
         query.addBindValue(values[0])
         query.addBindValue(values[1])
         query.exec_()
-       
+
+    def insert_ClassStudent(self,values):
+        query = QSqlQuery()
+        query.prepare("""INSERT into ClassStudents(StudentID,ClassID) values (?,?)""")
+        query.addBindValue(values[0])
+        query.addBindValue(values[1])
+        query.exec_()
+
+    def insert_ClassUnit(self,values):
+        query = QSqlQuery()
+        query.prepare("""INSERT into ClassUnits(ClassID,UnitID) values (?,?)""")
+        query.addBindValue(values[0])
+        query.addBindValue(values[1])
+        query.exec_()
+
+    def insert_Class(self,values):
+        query = QSqlQuery()
+        query.prepare("""INSERT into Classes(ClassName,TeacherID) values (?,?)""")
+        query.addBindValue(values[0])
+        query.addBindValue(values[1])
+        query.exec_()
+
+    def insert_Student(self,values):
+        query = QSqlQuery()
+        query.prepare("""INSERT into Students(StudentName,StudentSurname) values (?,?)""")
+        query.addBindValue(values[0])
+        query.addBindValue(values[1])
+        query.exec_()
+
+    def insert_Teacher(self,values):
+        query = QSqlQuery()
+        query.prepare("""INSERT into Teachers(TeacherName,TeacherSurname) values (?,?)""")
+        query.addBindValue(values[0])
+        query.addBindValue(values[1])
+        query.exec_()
+
+    def insert_UnitAssignment(self,values):
+        query = QSqlQuery()
+        query.prepare("""INSERT into UnitAssignments(UnitID,AssignmentID) values (?,?)""")
+        query.addBindValue(values[0])
+        query.addBindValue(values[1])
+        query.exec_()
+    
+    def insert_Unit(self,values):
+        query = QSqlQuery()
+        query.prepare("""INSERT into Units(UnitName) values (?,)""")
+        query.addBindValue(values[0])
+        query.exec_()
+
+    def insert_StudentAssignmentResult(self,values):
+        query = QSqlQuery()
+        query.prepare("""INSERT into StudentAssignmentResults(StudentID,AssignmentID,AssignmentMark) values (?,?,?)""")
+        query.addBindValue(values[0])
+        query.addBindValue(values[1])
+        query.addBindValue(values[2])
+        query.exec_()
             

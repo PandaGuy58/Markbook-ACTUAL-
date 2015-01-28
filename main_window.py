@@ -7,6 +7,7 @@ import sys
 from SQLConnection import *
 from DisplayTableWidget import *
 from inputWidgets import *
+from CreateDB_widget import *
 
 class MainWindow(QMainWindow):
     """Main Window Layout"""
@@ -70,6 +71,7 @@ class MainWindow(QMainWindow):
 
         #initialize application
         self.dbNotConnected()
+        self.startWidget = StartWidget(self)
         self.setCentralWidget(self.startWidget)
 
         #triggers
@@ -198,29 +200,41 @@ class InputDBNameWidget(QWidget):
         
         self.addCancelButton = QPushButton("Cancel")
 
-class startWidget(QWidget):
+class StartWidget(QWidget):
     """Startup Widget for MainWindow"""
-    def __init__(self):
+    def __init__(self,parent):
         super().__init__()
+        self.parent = parent
         self.stacked_layout = QStackedLayout()
         self.setLayout(self.stacked_layout)
         self.create_startLayout()
+        
+        #triggers
+        self.open_database.clicked.connect(self.parent.open_connection)
+        self.create_database.clicked.connect(self.new_database)
 
-    def create_startLayout():
+    def new_database(self):
+        if not hasattr(self,'CreateDbWidget'):
+            self.create_db_widget = CreateDbWidget()
+        self.parent.setCentralWidget(self.create_db_widget)
+        
+    def create_startLayout(self):
         self.open_database = QPushButton("Open an Existing Database")
         self.create_database = QPushButton("Create a New Database")
-        self.main_label = QLabel("Choose one of the following options")
+        self.main_label = QLabel("Choose one of the following options:")
 
         #add widgets to the layout
-        self.horizontal_layout = QHBoxLayout()
-        self.horizontal_layout.addWidget(self.main_label)
-        self.horizontal_layout.addWidget(self.create_database)
-        self.horizontal_layout.addWidget(self.open_database)
+        self.vertical_layout = QVBoxLayout()
+        self.vertical_layout.addWidget(self.main_label)
+        self.vertical_layout.addWidget(self.create_database)
+        self.vertical_layout.addWidget(self.open_database)
 
         self.display_widget = QWidget()
-        self.display_widget.setLayout(self.horizontal_layout)
+        self.display_widget.setLayout(self.vertical_layout)
         self.stacked_layout.addWidget(self.display_widget)
-    
+
+
+        
 
 if __name__ == "__main__":
     application = QApplication(sys.argv)

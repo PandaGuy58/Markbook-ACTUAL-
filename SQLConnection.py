@@ -139,4 +139,11 @@ class SQLConnection:
         query.addBindValue(values[1])
         query.addBindValue(values[2])
         query.exec_()
+
+    def find_assignmentIDs(self):
+        query = QsqlQuery()
+        query.prepare("""SELECT AssignmentID from Assignments""")
+        query.exec_()
+        return query
+
             

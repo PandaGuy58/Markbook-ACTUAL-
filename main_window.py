@@ -8,6 +8,7 @@ from SQLConnection import *
 from DisplayTableWidget import *
 from inputWidgets import *
 from CreateDB_widget import *
+from deleteWidgets import *
 
 class MainWindow(QMainWindow):
     """Main Window Layout"""
@@ -16,6 +17,12 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Markbook")
         self.resize(500,500)
+
+        #initialize application
+        self.dbNotConnected()
+        self.startWidget = StartWidget(self)
+        self.setCentralWidget(self.startWidget)
+        
         #actions
         #file
         self.new_database = QAction("New Database",self)
@@ -42,11 +49,13 @@ class MainWindow(QMainWindow):
         #add
         self.add_assignments = QAction("Assignments",self)
 
+        #delete
+        self.delete_assignments = QAction("Assignments",self)
+
         #add menu the application
         self.menu = QMenuBar()
         self.file_menu = self.menu.addMenu("File")
         self.table_menu = self.menu.addMenu("Tables")
-        self.add_menu = self.menu.addMenu("Add")
 
         #add actions to menu
         self.file_menu.addAction(self.new_database)
@@ -66,13 +75,10 @@ class MainWindow(QMainWindow):
 
         self.add_menu.addAction(self.add_assignments)
 
+        self.delete_menu.addAction(self.delete_assignments)
+
         #initalize menu bar
         self.setMenuBar(self.menu)
-
-        #initialize application
-        self.dbNotConnected()
-        self.startWidget = StartWidget(self)
-        self.setCentralWidget(self.startWidget)
 
         #triggers
         self.open_a_database.triggered.connect(self.open_connection)
@@ -91,6 +97,9 @@ class MainWindow(QMainWindow):
 
         #add
         self.add_assignments.triggered.connect(self.add_assignment_record)
+
+        #delete
+        self.delete_assignments.triggered.connect(self.delete_assignment_record)
         
     def open_connection(self):
         path = QFileDialog.getOpenFileName()
@@ -114,6 +123,12 @@ class MainWindow(QMainWindow):
         self.table_menu.setEnabled(False)
         self.close_database.setEnabled(False)
         self.add_menu.setEnabled(False)
+
+    def delete_assignment_record(self):
+        if not hasattr(self,'AssignmentDeleteWidget'):
+            self.assignment_delete_widget = AssignmentDeleteWidget(self)
+        self.setCentralWidget(self.assignment_delete_widget)
+        
 
     #add methods:
 
@@ -205,8 +220,6 @@ class StartWidget(QWidget):
     def __init__(self,parent):
         super().__init__()
         self.parent = parent
-        self.stacked_layout = QStackedLayout()
-        self.setLayout(self.stacked_layout)
         self.create_startLayout()
         
         #triggers
@@ -215,7 +228,7 @@ class StartWidget(QWidget):
 
     def new_database(self):
         if not hasattr(self,'CreateDbWidget'):
-            self.create_db_widget = CreateDbWidget()
+            self.create_db_widget = CreateDbWidget(self)
         self.parent.setCentralWidget(self.create_db_widget)
         
     def create_startLayout(self):
@@ -229,12 +242,7 @@ class StartWidget(QWidget):
         self.vertical_layout.addWidget(self.create_database)
         self.vertical_layout.addWidget(self.open_database)
 
-        self.display_widget = QWidget()
-        self.display_widget.setLayout(self.vertical_layout)
-        self.stacked_layout.addWidget(self.display_widget)
-
-
-        
+        self.setLayout(self.vertical_layout)
 
 if __name__ == "__main__":
     application = QApplication(sys.argv)

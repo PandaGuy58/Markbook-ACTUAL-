@@ -8,16 +8,16 @@ from SQLConnection import *
 from main_window import *
 
 class CreateDbWidget(QWidget):
+    cancel = pyqtSignal()
     """Layout for a widget to create and initialize a db file"""
     #constructor
     def __init__(self,parent):
         parent = parent
         super().__init__()
-        self.stacked_layout = QStackedLayout()
-        self.setLayout(self.stacked_layout)
         self.createDdWidget_layout()
 
         #triggers
+        self.cancel_button.clicked.connect(self.cancel_trigger)
 
     def createDdWidget_layout(self):
         self.main_label = QLabel("Create a New Database")
@@ -33,11 +33,9 @@ class CreateDbWidget(QWidget):
         self.layout.addWidget(self.create_button,2,1)
         self.layout.addWidget(self.cancel_button,2,0)
 
-        self.display_widget = QWidget()
-        self.display_widget.setLayout(self.layout)
-        self.stacked_layout.addWidget(self.display_widget)
+        self.setLayout(self.layout)
 
     def cancel_trigger(self):
-        pass
+        self.parent.setLayout(self.stacked_layout.setCurrentIndex[1])
         
         
